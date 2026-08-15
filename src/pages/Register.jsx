@@ -2,30 +2,40 @@ import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AuthContextData } from "../context/AuthContext";
 import { useNavigate } from "react-router";
+import { ToastContainer, toast } from "react-toastify";
 
 const Register = () => {
   const navigate = useNavigate();
 
   const { registerUser } = useContext(AuthContextData);
 
-  const [role, setRole] = useState("listener");
-
+  // const [role, setRole] = useState("listener");
+  // console.log(role);
   const {
     handleSubmit,
     register,
     formState: { errors },
     reset,
-  } = useForm();
+    setValue,
+    watch,
+  } = useForm({
+    defaultValues: {
+      role: "listener",
+    },
+  });
+
+  const role = watch("role");
+  console.log(role);
 
   const submitHandler = (data) => {
     const response = registerUser({ ...data, role });
 
     if (!response.success) {
-      alert(response.message);
+      toast.error(response.message);
       return;
     }
 
-    navigate("/");
+    navigate("/login");
   };
 
   return (
@@ -56,7 +66,8 @@ const Register = () => {
               <div className="mx-auto max-w-sm rounded-[1.15rem] border border-white/10 bg-[#100b1f]/90 p-1">
                 <div className="grid grid-cols-2 gap-1 rounded-[0.95rem] bg-[#0e0a1c]/95 p-1">
                   <button
-                    onClick={() => setRole("listener")}
+                    // onClick={() => setRole("listener")}
+                    onClick={() => setValue("role", "listener")}
                     type="button"
                     className={`rounded-[0.8rem] px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.2em] transition active:scale-95 ${
                       role === "listener"
@@ -71,7 +82,8 @@ const Register = () => {
                   </button>
 
                   <button
-                    onClick={() => setRole("artist")}
+                    // onClick={() => setRole("artist")}
+                    onClick={() => setValue("role", "artist")}
                     type="button"
                     className={`rounded-[0.8rem] px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.2em] transition active:scale-95 ${
                       role === "artist"
